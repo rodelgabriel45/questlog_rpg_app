@@ -8,19 +8,13 @@ import 'package:questlog_rpg/core/theme/app_text_styles.dart';
 class XpProgress extends StatelessWidget {
   final int currentXp;
   final int requiredXp;
+  final double progress;
   const XpProgress({
     super.key,
     required this.currentXp,
     required this.requiredXp,
+    required this.progress,
   });
-
-  double get progress {
-    if (requiredXp <= 0) {
-      return 0;
-    }
-
-    return (currentXp / requiredXp).clamp(0.0, 1.0);
-  }
 
   @override
   Widget build(BuildContext context) {
