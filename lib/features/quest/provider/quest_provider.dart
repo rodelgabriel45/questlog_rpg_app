@@ -22,4 +22,29 @@ class QuestProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Quest? completeQuest(String questId) {
+    final index = _quests.indexWhere((quest) => quest.id == questId);
+
+    if (index == -1) {
+      return null;
+    }
+
+    final quest = _quests[index];
+
+    if (quest.isCompleted) {
+      return null;
+    }
+
+    final completedQuest = quest.copyWith(
+      currentProgress: quest.targetProgress,
+      isCompleted: true,
+    );
+
+    _quests[index] = completedQuest;
+
+    notifyListeners();
+
+    return completedQuest;
+  }
 }

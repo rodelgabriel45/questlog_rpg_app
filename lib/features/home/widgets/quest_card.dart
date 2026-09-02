@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/constants/app_colors.dart';
 import 'package:questlog_rpg/core/constants/app_radius.dart';
 import 'package:questlog_rpg/core/constants/app_sizes.dart';
 import 'package:questlog_rpg/core/constants/app_spacing.dart';
 import 'package:questlog_rpg/core/theme/app_text_styles.dart';
+import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 import 'package:questlog_rpg/models/quest/quest.dart';
 import 'package:questlog_rpg/models/quest/quest_category.dart';
 
