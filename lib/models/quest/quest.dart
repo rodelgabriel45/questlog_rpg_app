@@ -33,4 +33,28 @@ class Quest {
 
     return (currentProgress / targetProgress).clamp(0.0, 1.0);
   }
+
+  Quest copyWith({
+    String? id,
+    String? title,
+    String? description,
+    QuestCategory? category,
+    int? currentProgress,
+    int? targetProgress,
+    int? xpReward,
+    int? goldReward,
+    bool? isCompleted,
+  }) {
+    return Quest(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      currentProgress: currentProgress ?? this.currentProgress,
+      targetProgress: targetProgress ?? this.targetProgress,
+      xpReward: xpReward ?? this.xpReward,
+      goldReward: goldReward ?? this.goldReward,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }

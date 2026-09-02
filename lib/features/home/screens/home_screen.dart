@@ -6,6 +6,7 @@ import 'package:questlog_rpg/features/home/widgets/player_header.dart';
 import 'package:questlog_rpg/features/home/widgets/todays_quests.dart';
 import 'package:questlog_rpg/features/home/widgets/xp_progress.dart';
 import 'package:questlog_rpg/features/player/providers/player_provider.dart';
+import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
