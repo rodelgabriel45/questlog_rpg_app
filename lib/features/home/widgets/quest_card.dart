@@ -4,30 +4,33 @@ import 'package:questlog_rpg/core/constants/app_radius.dart';
 import 'package:questlog_rpg/core/constants/app_sizes.dart';
 import 'package:questlog_rpg/core/constants/app_spacing.dart';
 import 'package:questlog_rpg/core/theme/app_text_styles.dart';
+import 'package:questlog_rpg/models/quest/quest.dart';
+import 'package:questlog_rpg/models/quest/quest_category.dart';
 
 class QuestCard extends StatelessWidget {
-  final String title;
-  final int currentProgress;
-  final int targetProgress;
-  final int xpReward;
-  final IconData icon;
-  final Color iconColor;
-  const QuestCard({
-    super.key,
-    required this.title,
-    required this.currentProgress,
-    required this.targetProgress,
-    required this.xpReward,
-    required this.icon,
-    required this.iconColor,
-  });
+  final Quest quest;
+  const QuestCard({super.key, required this.quest});
 
-  double get progress {
-    if (targetProgress <= 0) {
-      return 0;
-    }
+  IconData get questIcon {
+    return switch (quest.category) {
+      QuestCategory.fitness => Icons.directions_run_outlined,
+      QuestCategory.learning => Icons.menu_book_outlined,
+      QuestCategory.coding => Icons.code,
+      QuestCategory.chores => Icons.cleaning_services_outlined,
+      QuestCategory.creative => Icons.auto_stories_outlined,
+      QuestCategory.custom => Icons.star_outline,
+    };
+  }
 
-    return (currentProgress / targetProgress).clamp(0.0, 1.0);
+  Color get questColor {
+    return switch (quest.category) {
+      QuestCategory.fitness => AppColors.fitness,
+      QuestCategory.learning => AppColors.learning,
+      QuestCategory.coding => AppColors.coding,
+      QuestCategory.chores => AppColors.chores,
+      QuestCategory.creative => AppColors.creative,
+      QuestCategory.custom => AppColors.custom,
+    };
   }
 
   @override
@@ -48,10 +51,14 @@ class QuestCard extends StatelessWidget {
                 width: AppSizes.questIcon,
                 height: AppSizes.questIcon,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
+                  color: questColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: iconColor, size: AppSizes.iconMedium),
+                child: Icon(
+                  questIcon,
+                  color: questColor,
+                  size: AppSizes.iconMedium,
+                ),
               ),
 
               const SizedBox(width: AppSpacing.md),
@@ -59,7 +66,7 @@ class QuestCard extends StatelessWidget {
               // Quest Title
               Expanded(
                 child: Text(
-                  title,
+                  quest.title,
                   style: AppTextStyles.labelMedium.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
@@ -71,13 +78,13 @@ class QuestCard extends StatelessWidget {
 
               // XP reward
               Text(
-                '+$xpReward XP',
+                '+${quest.xpReward} XP',
                 style: AppTextStyles.xp.copyWith(color: AppColors.gold),
               ),
-
-              const SizedBox(height: AppSpacing.sm),
             ],
           ),
+
+          const SizedBox(height: AppSpacing.sm),
 
           // Progress
           Row(
@@ -86,10 +93,10 @@ class QuestCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                   child: LinearProgressIndicator(
-                    value: progress,
+                    value: quest.progress,
                     minHeight: AppSizes.progressHeightSmall,
                     backgroundColor: AppColors.surfaceSecondary,
-                    valueColor: AlwaysStoppedAnimation(iconColor),
+                    valueColor: AlwaysStoppedAnimation(questColor),
                   ),
                 ),
               ),
@@ -97,7 +104,7 @@ class QuestCard extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
 
               Text(
-                '$currentProgress / $targetProgress',
+                '${quest.currentProgress} / ${quest.targetProgress}',
                 style: AppTextStyles.labelSmall,
               ),
             ],
