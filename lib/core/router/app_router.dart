@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:questlog_rpg/features/home/screens/home_screen.dart';
 import 'package:questlog_rpg/features/inventory/screens/inventory_screen.dart';
 import 'package:questlog_rpg/features/navigation/screens/main_screen.dart';
+import 'package:questlog_rpg/features/quest/screens/create_quest_screen.dart';
 import 'package:questlog_rpg/features/quest/screens/quests_screen.dart';
 import 'package:questlog_rpg/features/stats/screens/stats_screen.dart';
 
@@ -31,6 +32,14 @@ final appRouter = GoRouter(
               builder: (context, state) {
                 return const QuestsScreen();
               },
+              routes: [
+                GoRoute(
+                  path: 'create',
+                  builder: (context, state) {
+                    return const CreateQuestScreen();
+                  },
+                ),
+              ],
             ),
           ],
         ),

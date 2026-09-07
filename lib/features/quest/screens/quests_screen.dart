@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/constants/app_colors.dart';
 import 'package:questlog_rpg/core/constants/app_radius.dart';
@@ -36,7 +37,18 @@ class _QuestsScreenState extends State<QuestsScreen> {
     final filteredQuests = _getFilteredQuests(quests);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Quests'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Quests'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push('/quests/create');
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         children: [
