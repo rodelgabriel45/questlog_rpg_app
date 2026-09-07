@@ -1,0 +1,62 @@
+import 'package:go_router/go_router.dart';
+import 'package:questlog_rpg/features/home/screens/home_screen.dart';
+import 'package:questlog_rpg/features/inventory/screens/inventory_screen.dart';
+import 'package:questlog_rpg/features/navigation/screens/main_screen.dart';
+import 'package:questlog_rpg/features/quest/screens/quests_screen.dart';
+import 'package:questlog_rpg/features/stats/screens/stats_screen.dart';
+
+final appRouter = GoRouter(
+  initialLocation: '/home',
+  routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MainScreen(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) {
+                return const HomeScreen();
+              },
+            ),
+          ],
+        ),
+
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/quests',
+              builder: (context, state) {
+                return const QuestsScreen();
+              },
+            ),
+          ],
+        ),
+
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/inventory',
+              builder: (context, state) {
+                return const InventoryScreen();
+              },
+            ),
+          ],
+        ),
+
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/stats',
+              builder: (context, state) {
+                return const StatsScreen();
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
+);

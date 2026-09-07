@@ -22,4 +22,22 @@ class Player {
 
     return (currentXp / xpForNextLevel).clamp(0.0, 1.0);
   }
+
+  Player copyWith({
+    String? name,
+    int? level,
+    int? currentXp,
+    int? xpForNextLevel,
+    int? gold,
+    int? gems,
+  }) {
+    return Player(
+      name: name ?? this.name,
+      level: level ?? this.level,
+      currentXp: currentXp ?? this.currentXp,
+      xpForNextLevel: xpForNextLevel ?? this.xpForNextLevel,
+      gold: gold ?? this.gold,
+      gems: gems ?? this.gems,
+    );
+  }
 }

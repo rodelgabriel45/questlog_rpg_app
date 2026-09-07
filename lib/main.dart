@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:questlog_rpg/core/router/app_router.dart';
 import 'package:questlog_rpg/core/theme/app_theme.dart';
-import 'package:questlog_rpg/features/home/screens/home_screen.dart';
 import 'package:questlog_rpg/features/player/providers/player_provider.dart';
 import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 
@@ -23,10 +23,10 @@ class QuestLogApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const HomeScreen(),
+      routerConfig: appRouter,
     );
   }
 }

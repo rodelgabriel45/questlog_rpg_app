@@ -52,33 +52,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.task_alt_outlined),
-            selectedIcon: Icon(Icons.task_alt),
-            label: 'Quests',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.backpack_outlined),
-            selectedIcon: Icon(Icons.backpack),
-            label: 'Inventory',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart),
-            label: 'Stats',
-          ),
-        ],
-      ),
     );
   }
 }

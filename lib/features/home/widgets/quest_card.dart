@@ -5,6 +5,7 @@ import 'package:questlog_rpg/core/constants/app_radius.dart';
 import 'package:questlog_rpg/core/constants/app_sizes.dart';
 import 'package:questlog_rpg/core/constants/app_spacing.dart';
 import 'package:questlog_rpg/core/theme/app_text_styles.dart';
+import 'package:questlog_rpg/features/player/providers/player_provider.dart';
 import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 import 'package:questlog_rpg/models/quest/quest.dart';
 import 'package:questlog_rpg/models/quest/quest_category.dart';
@@ -111,6 +112,27 @@ class QuestCard extends StatelessWidget {
               ),
             ],
           ),
+
+          if (!quest.isCompleted)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  final questProvider = context.read<QuestProvider>();
+                  final playerProvider = context.read<PlayerProvider>();
+
+                  final completedQuest = questProvider.completeQuest(quest.id);
+
+                  if (completedQuest != null) {
+                    playerProvider.rewardPlayer(
+                      xp: quest.xpReward,
+                      gold: quest.goldReward,
+                    );
+                  }
+                },
+                child: const Text('Complete Quest'),
+              ),
+            ),
         ],
       ),
     );
