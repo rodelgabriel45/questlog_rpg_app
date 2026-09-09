@@ -14,7 +14,6 @@ class QuestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questColor = quest.category.color;
     final isCompleted = quest.isCompleted;
 
     return InkWell(

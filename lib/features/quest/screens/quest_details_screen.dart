@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/constants/app_colors.dart';
 import 'package:questlog_rpg/core/constants/app_radius.dart';
@@ -8,11 +9,54 @@ import 'package:questlog_rpg/core/theme/app_text_styles.dart';
 import 'package:questlog_rpg/features/player/providers/player_provider.dart';
 import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 import 'package:questlog_rpg/features/quest/widgets/reward_card.dart';
+import 'package:questlog_rpg/models/quest/quest.dart';
 import 'package:questlog_rpg/models/quest/quest_category.dart';
 
 class QuestDetailsScreen extends StatelessWidget {
   final String questId;
   const QuestDetailsScreen({super.key, required this.questId});
+
+  Future<void> _showDeleteConfirmation(
+    BuildContext context,
+    Quest quest,
+  ) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Quest?'),
+          content: Text('Are you sure you want to delete ${quest.title}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Cancel'),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) {
+      return;
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
+    context.read<QuestProvider>().deleteQuest(questId);
+
+    context.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +70,41 @@ class QuestDetailsScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Quest Details'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Quest Details'),
+        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'edit',
+                child: ListTile(
+                  leading: Icon(Icons.edit_outlined),
+                  title: Text('Edit Quest'),
+                ),
+              ),
+
+              PopupMenuItem(
+                value: 'delete',
+                child: ListTile(
+                  leading: Icon(Icons.delete_outline),
+                  title: Text('Delete Quest'),
+                ),
+              ),
+            ],
+
+            onSelected: (value) {
+              if (value == 'edit') {
+                context.push('/quests/$questId/edit');
+              }
+
+              if (value == 'delete') {
+                _showDeleteConfirmation(context, quest);
+              }
+            },
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
         children: [

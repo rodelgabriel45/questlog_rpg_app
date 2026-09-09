@@ -7,7 +7,8 @@ import 'package:questlog_rpg/models/quest/quest.dart';
 import 'package:questlog_rpg/models/quest/quest_category.dart';
 
 class CreateQuestScreen extends StatefulWidget {
-  const CreateQuestScreen({super.key});
+  final Quest? quest;
+  const CreateQuestScreen({super.key, this.quest});
 
   @override
   State<CreateQuestScreen> createState() => _CreateQuestScreenState();
@@ -23,6 +24,8 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
   final _goldController = TextEditingController();
 
   QuestCategory? _selectedCategory;
+
+  bool get _isEditing => widget.quest != null;
 
   String _categoryLabel(QuestCategory category) {
     switch (category) {
@@ -42,6 +45,22 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    final quest = widget.quest;
+
+    if (quest != null) {
+      _titleController.text = quest.title;
+      _descriptionController.text = quest.description;
+      _selectedCategory = quest.category;
+      _targetController.text = quest.targetProgress.toString();
+      _xpController.text = quest.xpReward.toString();
+      _goldController.text = quest.goldReward.toString();
+    }
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
@@ -51,7 +70,7 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
     super.dispose();
   }
 
-  void _createQuest() {
+  void _saveQuest() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -63,16 +82,31 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
     final xp = int.parse(_xpController.text.trim());
     final gold = int.parse(_goldController.text.trim());
 
-    final quest = Quest.create(
-      title: title,
-      description: description,
-      category: category,
-      targetProgress: target,
-      xpReward: xp,
-      goldReward: gold,
-    );
+    if (_isEditing) {
+      final quest = widget.quest!;
 
-    context.read<QuestProvider>().addQuest(quest);
+      final updatedQuest = quest.copyWith(
+        title: title,
+        description: description,
+        category: category,
+        targetProgress: target,
+        xpReward: xp,
+        goldReward: gold,
+      );
+
+      context.read<QuestProvider>().updateQuest(updatedQuest);
+    } else {
+      final quest = Quest.create(
+        title: title,
+        description: description,
+        category: category,
+        targetProgress: target,
+        xpReward: xp,
+        goldReward: gold,
+      );
+
+      context.read<QuestProvider>().addQuest(quest);
+    }
 
     context.pop();
   }
@@ -80,18 +114,26 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Quest'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(_isEditing ? 'Edit Quest' : 'Create Quest'),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
           children: [
-            Text('Create a new quest', style: AppTextStyles.headlineSmall),
+            Text(
+              _isEditing ? 'Edit your quest' : 'Create a new quest',
+              style: AppTextStyles.headlineSmall,
+            ),
 
             const SizedBox(height: 8),
 
             Text(
-              'Define a challenge and start your next adventure.',
+              _isEditing
+                  ? 'Update your challenge and keep your progress.'
+                  : 'Define a challenge and start your next adventure.',
               style: AppTextStyles.bodyMedium,
             ),
 
@@ -250,8 +292,8 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
             SizedBox(
               height: 52,
               child: FilledButton(
-                onPressed: _createQuest,
-                child: const Text('Create Quest'),
+                onPressed: _saveQuest,
+                child: Text(_isEditing ? 'Save Changes' : 'Create Quest'),
               ),
             ),
           ],

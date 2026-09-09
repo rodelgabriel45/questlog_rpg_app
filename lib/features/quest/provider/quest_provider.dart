@@ -63,4 +63,22 @@ class QuestProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void updateQuest(Quest updatedQuest) {
+    final index = _quests.indexWhere((quest) => quest.id == updatedQuest.id);
+
+    if (index == -1) {
+      return;
+    }
+
+    _quests[index] = updatedQuest;
+
+    notifyListeners();
+  }
+
+  void deleteQuest(String questId) {
+    _quests.removeWhere((quest) => quest.id == questId);
+
+    notifyListeners();
+  }
 }
