@@ -47,4 +47,10 @@ class QuestProvider extends ChangeNotifier {
 
     return completedQuest;
   }
+
+  void addQuest(Quest quest) {
+    _quests.add(quest);
+
+    notifyListeners();
+  }
 }

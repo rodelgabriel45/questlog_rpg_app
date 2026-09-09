@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/theme/app_text_styles.dart';
+import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
+import 'package:questlog_rpg/models/quest/quest.dart';
 import 'package:questlog_rpg/models/quest/quest_category.dart';
 
 class CreateQuestScreen extends StatefulWidget {
@@ -54,17 +58,23 @@ class _CreateQuestScreenState extends State<CreateQuestScreen> {
 
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
-    final category = _selectedCategory;
+    final category = _selectedCategory!;
     final target = int.parse(_targetController.text.trim());
     final xp = int.parse(_xpController.text.trim());
     final gold = int.parse(_goldController.text.trim());
 
-    debugPrint('Title: $title');
-    debugPrint('Description: $description');
-    debugPrint('Category: $category');
-    debugPrint('Target: $target');
-    debugPrint('XP: $xp');
-    debugPrint('Gold: $gold');
+    final quest = Quest.create(
+      title: title,
+      description: description,
+      category: category,
+      targetProgress: target,
+      xpReward: xp,
+      goldReward: gold,
+    );
+
+    context.read<QuestProvider>().addQuest(quest);
+
+    context.pop();
   }
 
   @override

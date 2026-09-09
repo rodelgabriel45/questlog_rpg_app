@@ -57,4 +57,25 @@ class Quest {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
+
+  factory Quest.create({
+    required String title,
+    required String description,
+    required QuestCategory category,
+    required int targetProgress,
+    required int xpReward,
+    required int goldReward,
+  }) {
+    return Quest(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      description: description,
+      category: category,
+      currentProgress: 0,
+      targetProgress: targetProgress,
+      xpReward: xpReward,
+      goldReward: goldReward,
+      isCompleted: false,
+    );
+  }
 }
