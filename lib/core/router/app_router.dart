@@ -3,6 +3,7 @@ import 'package:questlog_rpg/features/home/screens/home_screen.dart';
 import 'package:questlog_rpg/features/inventory/screens/inventory_screen.dart';
 import 'package:questlog_rpg/features/navigation/screens/main_screen.dart';
 import 'package:questlog_rpg/features/quest/screens/create_quest_screen.dart';
+import 'package:questlog_rpg/features/quest/screens/quest_details_screen.dart';
 import 'package:questlog_rpg/features/quest/screens/quests_screen.dart';
 import 'package:questlog_rpg/features/stats/screens/stats_screen.dart';
 
@@ -37,6 +38,15 @@ final appRouter = GoRouter(
                   path: 'create',
                   builder: (context, state) {
                     return const CreateQuestScreen();
+                  },
+                ),
+
+                GoRoute(
+                  path: ':questId',
+                  builder: (context, state) {
+                    final questId = state.pathParameters['questId']!;
+
+                    return QuestDetailsScreen(questId: questId);
                   },
                 ),
               ],

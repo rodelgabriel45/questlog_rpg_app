@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/constants/app_colors.dart';
 import 'package:questlog_rpg/core/constants/app_spacing.dart';
@@ -24,7 +25,9 @@ class TodaysQuests extends StatelessWidget {
             const Spacer(),
 
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                context.go('/quests');
+              },
               child: Text(
                 'View all',
                 style: AppTextStyles.labelMedium.copyWith(

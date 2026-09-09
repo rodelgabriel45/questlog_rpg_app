@@ -7,6 +7,16 @@ class QuestProvider extends ChangeNotifier {
 
   List<Quest> get quests => List.unmodifiable(_quests);
 
+  Quest? getQuestById(String questId) {
+    for (final quest in _quests) {
+      if (quest.id == questId) {
+        return quest;
+      }
+    }
+
+    return null;
+  }
+
   void updateQuestProgress(String questId, int newProgress) {
     final index = _quests.indexWhere((quest) => quest.id == questId);
 
