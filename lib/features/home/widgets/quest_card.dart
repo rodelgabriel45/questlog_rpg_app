@@ -20,7 +20,7 @@ class QuestCard extends StatelessWidget {
       onTap: () {
         context.push('/quests/${quest.id}');
       },
-      child: Ink(
+      child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,

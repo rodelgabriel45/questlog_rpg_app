@@ -7,16 +7,20 @@ class PlayerProvider extends ChangeNotifier {
 
   Player get player => _player;
 
-  void rewardPlayer({required int xp, required int gold}) {
+  int rewardPlayer({required int xp, required int gold}) {
     var newXp = _player.currentXp + xp;
     var newLevel = _player.level;
     var newXpForNextLevel = _player.xpForNextLevel;
+    var levelsGained = 0;
+
+    const xpIncreasePerLevel = 500;
 
     while (newXp >= newXpForNextLevel) {
       newXp -= newXpForNextLevel;
 
       newLevel++;
-      newXpForNextLevel += 500;
+      levelsGained++;
+      newXpForNextLevel += xpIncreasePerLevel;
     }
 
     _player = _player.copyWith(
@@ -27,5 +31,7 @@ class PlayerProvider extends ChangeNotifier {
     );
 
     notifyListeners();
+
+    return levelsGained;
   }
 }

@@ -58,6 +58,188 @@ class QuestDetailsScreen extends StatelessWidget {
     context.pop();
   }
 
+  Future<void> _completeQuest(BuildContext context, Quest quest) async {
+    final questProvider = context.read<QuestProvider>();
+    final playerProvider = context.read<PlayerProvider>();
+
+    final completedQuest = questProvider.completeQuest(quest.id);
+
+    if (completedQuest == null) return;
+
+    final levelsGained = playerProvider.rewardPlayer(
+      xp: completedQuest.xpReward,
+      gold: completedQuest.goldReward,
+    );
+
+    if (!context.mounted) return;
+
+    await _showQuestCompleteDialog(context, completedQuest);
+
+    if (levelsGained > 0 && context.mounted) {
+      await _showLevelUpDialog(context, playerProvider.player.level);
+    }
+  }
+
+  Future<void> _showQuestCompleteDialog(
+    BuildContext context,
+    Quest quest,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: AppColors.success,
+                  size: 40,
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              Text(
+                'Quest Complete!',
+                style: AppTextStyles.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.sm),
+
+              Text(
+                quest.title,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: RewardCard(
+                      icon: Icons.auto_awesome,
+                      value: '+${quest.xpReward}',
+                      label: 'XP',
+                      color: AppColors.gold,
+                    ),
+                  ),
+
+                  const SizedBox(width: AppSpacing.sm),
+
+                  Expanded(
+                    child: RewardCard(
+                      icon: Icons.monetization_on_outlined,
+                      value: '+${quest.goldReward}',
+                      label: 'Gold',
+                      color: AppColors.gold,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Awesome!'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showLevelUpDialog(BuildContext context, int newLevel) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: AppColors.primary,
+                  size: 48,
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              Text(
+                'Level Up!',
+                style: AppTextStyles.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              Text(
+                'Level $newLevel',
+                style: AppTextStyles.displayMedium.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.sm),
+
+              Text(
+                'You reached a new level!',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Awesome!'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final quest = context.watch<QuestProvider>().getQuestById(questId);
@@ -279,17 +461,7 @@ class QuestDetailsScreen extends StatelessWidget {
               height: 52,
               child: FilledButton(
                 onPressed: () {
-                  final questProvider = context.read<QuestProvider>();
-                  final playerProvider = context.read<PlayerProvider>();
-
-                  final completedQuest = questProvider.completeQuest(quest.id);
-
-                  if (completedQuest != null) {
-                    playerProvider.rewardPlayer(
-                      xp: completedQuest.xpReward,
-                      gold: completedQuest.goldReward,
-                    );
-                  }
+                  _completeQuest(context, quest);
                 },
                 child: const Text('Complete Quest'),
               ),
