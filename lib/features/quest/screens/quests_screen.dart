@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:questlog_rpg/core/constants/app_colors.dart';
 import 'package:questlog_rpg/core/constants/app_radius.dart';
+import 'package:questlog_rpg/core/theme/app_text_styles.dart';
 import 'package:questlog_rpg/features/home/widgets/quest_card.dart';
 import 'package:questlog_rpg/features/quest/provider/quest_provider.dart';
 import 'package:questlog_rpg/models/quest/quest.dart';
@@ -52,10 +53,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         children: [
-          Text(
-            'Manage your challenges',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          Text('Manage your challenges', style: AppTextStyles.bodyLarge),
 
           const SizedBox(height: 24),
 
