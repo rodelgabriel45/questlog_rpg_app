@@ -240,6 +240,24 @@ class QuestDetailsScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _showUpdateProgressDialog(
+    BuildContext context,
+    Quest quest,
+  ) async {
+    final newProgress = await showDialog<int>(
+      context: context,
+      builder: (context) {
+        return _UpdateProgressDialog(quest: quest);
+      },
+    );
+
+    if (newProgress == null || !context.mounted) {
+      return;
+    }
+
+    context.read<QuestProvider>().updateQuestProgress(quest.id, newProgress);
+  }
+
   @override
   Widget build(BuildContext context) {
     final quest = context.watch<QuestProvider>().getQuestById(questId);
@@ -398,6 +416,23 @@ class QuestDetailsScreen extends StatelessWidget {
             ],
           ),
 
+          const SizedBox(height: AppSpacing.lg),
+
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              style: ButtonStyle(
+                side: WidgetStateProperty.all(
+                  BorderSide(width: 1.5, color: AppColors.primary),
+                ),
+              ),
+              onPressed: () {
+                _showUpdateProgressDialog(context, quest);
+              },
+              child: const Text('Update Progress'),
+            ),
+          ),
+
           const SizedBox(height: AppSpacing.xxl),
 
           Text('Rewards', style: AppTextStyles.labelLarge),
@@ -468,6 +503,94 @@ class QuestDetailsScreen extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _UpdateProgressDialog extends StatefulWidget {
+  final Quest quest;
+  const _UpdateProgressDialog({required this.quest});
+
+  @override
+  State<_UpdateProgressDialog> createState() => _UpdateProgressDialogState();
+}
+
+class _UpdateProgressDialogState extends State<_UpdateProgressDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController(
+      text: widget.quest.currentProgress.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final progress = int.parse(_controller.text.trim());
+
+    Navigator.of(context).pop(progress);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Update Progress'),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: _controller,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: 'Current Progress',
+            hintText: '0 - ${widget.quest.targetProgress}',
+          ),
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Please enter your progress';
+            }
+
+            final progress = int.tryParse(value.trim());
+
+            if (progress == null) {
+              return 'Please enter a valid number';
+            }
+
+            if (progress < 0) {
+              return 'Progress cannot be negative';
+            }
+
+            if (progress > widget.quest.targetProgress) {
+              return 'Progress cannot exceed ${widget.quest.targetProgress}';
+            }
+
+            return null;
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cancel'),
+        ),
+
+        FilledButton(onPressed: _save, child: const Text('Save')),
+      ],
     );
   }
 }
